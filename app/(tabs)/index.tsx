@@ -4,8 +4,24 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { TrackierConfig, TrackierSDK, TrackierEvent} from 'react-native-trackier';
 
 export default function HomeScreen() {
+
+
+  var trackierConfig = new TrackierConfig("ee9f21fb-5848-4ed9-8d9c-e4093e6d220c", TrackierConfig.EnvironmentDevelopment);
+  trackierConfig.setAppSecret("640710587f41ea36ac0cb370","9e043b7e-7f44-403c-ae11-8cf6bfe8daa0");
+  //trackierConfig.setManualMode(true);
+  //TrackierSDK.setLocalRefTrack(true, "_")
+   TrackierSDK.parseDeepLink("https://www.trackier.com")
+  trackierConfig.setDeferredDeeplinkCallbackListener(function(uri) {
+    console.log("Deferred Deeplink Callback received");
+    console.log("URL: " + uri);
+  });
+  TrackierSDK.initialize(trackierConfig);
+
+  
+ 
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
