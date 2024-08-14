@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
+import { StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -8,79 +8,93 @@ import { TrackierConfig, TrackierSDK, TrackierEvent} from 'react-native-trackier
 
 export default function HomeScreen() {
 
-
+  useEffect(() => {
   var trackierConfig = new TrackierConfig("ee9f21fb-5848-4ed9-8d9c-e4093e6d220c", TrackierConfig.EnvironmentDevelopment);
   trackierConfig.setAppSecret("640710587f41ea36ac0cb370","9e043b7e-7f44-403c-ae11-8cf6bfe8daa0");
   //trackierConfig.setManualMode(true);
   //TrackierSDK.setLocalRefTrack(true, "_")
-   TrackierSDK.parseDeepLink("https://www.trackier.com")
   trackierConfig.setDeferredDeeplinkCallbackListener(function(uri) {
     console.log("Deferred Deeplink Callback received");
     console.log("URL: " + uri);
   });
   TrackierSDK.initialize(trackierConfig);
+   
+    return () => {
+     // subscription.remove();
+    };
+  }, []);
 
-  
- 
+
+  function _onPress_trackSimpleEvent(){
+    var trackierEvent = new TrackierEvent(TrackierEvent.ADD_TO_CART);
+    trackierEvent.param1 = "XXXXXX";
+    trackierEvent.param2 = "kkkkkk";
+    trackierEvent.couponCode = "testReact";
+    trackierEvent.discount = 2.0;
+    TrackierSDK.setUserName('abc');
+    TrackierSDK.setUserPhone("813434721");
+    TrackierSDK.setUserId("67863872382");
+   // TrackierSDK.getTrackierId().then(val => console.log('===trackierid: ', val)).catch(e => console.log('==error: ', e))
+    //trackierEvent.setEventValue("param","8130300721");
+   // trackierEvent.setEventValue("param2",2.0);
+    const customData = new Map();
+    customData.set("name", "sanu");
+    customData.set("phone", "8130300784");
+    //TrackierSDK.parseDeepLink("https://trackier58.u9ilnk.me/d/K5H7J2MkgU")
+    //trackierEvent.ev = customData;
+    var jsonData = { "url": "+91-8130300721" ,  "name": "Embassies" };
+    trackierEvent.ev = jsonData;
+    //trackierEvent.setEventValue("param",jsonData);
+    //TrackierSDK.fireInstall();
+    //TrackierSDK.parseDeepLink("https://www.trackier.com/d?ad=sanu&adset=sanu2")
+    TrackierSDK.trackEvent(trackierEvent);
+  }
+
+  function _onPress_trackRevenueEvent(){
+    var trackierEvent1 = new TrackierEvent(TrackierEvent.PURCHASE);
+    trackierEvent1.param1 = "XXXXXX";
+    trackierEvent1.param2 = "kkkkkkk";
+    trackierEvent1.couponCode = "testReact";
+    //trackierEvent1.discount = 2.0;
+    TrackierEvent.set
+    trackierEvent1.revenue = 2.5;
+    trackierEvent1.currency = "USD";
+    TrackierSDK.trackEvent(trackierEvent1);
+    TrackierSDK.setEnabled(true);
+    TrackierSDK.setUserEmail("anuj@trackier.com");
+    TrackierSDK.setUserName("Sanu");
+    TrackierSDK.setUserPhone("8130300721");
+    TrackierSDK.setUserId("abcd");
+
+    TrackierSDK.trackAsOrganic(false);
+    TrackierSDK.setLocalRefTrack(true,"test");
+  }
+
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <>
+      <View style={styles.container}>
+        <Text style={{ color: "grey", fontSize: 30 }}>Trackier React-Native Sdk</Text>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={_onPress_trackSimpleEvent}>
+          <Text>Track Simple Event</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.button}
+          onPress={_onPress_trackRevenueEvent}>
+          <Text>Track Revenue Event</Text>
+        </TouchableHighlight>
+        </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+    justifyContent: 'center',
   },
 });
